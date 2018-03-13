@@ -191,9 +191,77 @@ ALTER TABLE dbo.MenuItem WITH CHECK
 GO
 
 /*
-DROP TABLE MenuItem
-DROP TABLE Menu
-DROP TABLE Item
-DROP TABLE Category
-DROP TABLE Restaurant
+	Client
+*/
+
+CREATE TABLE dbo.Client (
+	Id INT IDENTITY(1,1) NOT NULL
+	,CreationDate DATETIME NOT NULL
+	,LastUpdate DATETIME NOT NULL
+	,UpdatedBy NVARCHAR(50)
+	,[Name] NVARCHAR(50) NOT NULL
+	,Email VARCHAR(50) NOT NULL
+	,[Address] NVARCHAR(MAX)
+	,Latitude VARCHAR(25)
+	,Longitude VARCHAR(25)
+)
+GO
+
+ALTER TABLE dbo.Client
+	ADD CONSTRAINT PK_Client PRIMARY KEY CLUSTERED (Id)
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX UX_Client_Email
+	ON dbo.Client (Email)
+GO
+
+/*
+	Client
+*/
+
+CREATE TABLE dbo.[Order] (
+	Id INT IDENTITY(1,1) NOT NULL
+	,RestaurantId INT NOT NULL
+	,ClientId INT NOT NULL
+	,CreationDate DATETIME NOT NULL
+	,LastUpdate DATETIME NOT NULL
+	,UpdatedBy NVARCHAR(50)
+	,[Text] NVARCHAR(50) NOT NULL
+	,Price MONEY NOT NULL
+	,DeliveryTime INT
+)
+GO
+
+ALTER TABLE dbo.[Order]
+	ADD CONSTRAINT PK_Order PRIMARY KEY CLUSTERED (Id)
+GO
+
+ALTER TABLE dbo.[Order] WITH CHECK
+	ADD CONSTRAINT FK_Order_RestaurantId_Restaurant_Id
+	FOREIGN KEY (RestaurantId)
+	REFERENCES dbo.Restaurant (Id)
+GO
+
+ALTER TABLE dbo.[Order] WITH CHECK
+	CHECK CONSTRAINT FK_Order_RestaurantId_Restaurant_Id
+GO
+
+ALTER TABLE dbo.[Order] WITH CHECK
+	ADD CONSTRAINT FK_Order_ClientId_Client_Id
+	FOREIGN KEY (ClientId)
+	REFERENCES dbo.Client (Id)
+GO
+
+ALTER TABLE dbo.[Order] WITH CHECK
+	CHECK CONSTRAINT FK_Order_ClientId_Client_Id
+GO
+
+/*
+DROP TABLE dbo.MenuItem
+DROP TABLE dbo.Menu
+DROP TABLE dbo.Item
+DROP TABLE dbo.Category
+DROP TABLE dbo.[Order]
+DROP TABLE dbo.Client
+DROP TABLE dbo.Restaurant
 */

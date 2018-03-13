@@ -21,10 +21,17 @@ namespace Papago.Data.DataAccess
         public IQueryable<TEntity> GetWithProperties<TEntity>() where TEntity : class
         {
             var parentEntityNames = typeof( TEntity ).GetProperties().Where( x => x.PropertyType.IsSubclassOf( typeof( BaseEntity ) ) ).Select( x => x.Name );
-            var include = String.Join( '.', parentEntityNames );
-            return String.IsNullOrEmpty( include )
-                ? Get<TEntity>()
-                : Set<TEntity>().Include( include );
+            //var include = String.Join( '.', parentEntityNames );
+            //return String.IsNullOrEmpty( include )
+            //    ? Get<TEntity>()
+            //    : Set<TEntity>().Include( include );
+            var query = Set<TEntity>().AsQueryable();
+            foreach ( var parentEntityName in parentEntityNames )
+            {
+                query = query.Include( parentEntityName );
+            }
+
+            return query;
         }
 
         public TEntity Create<TEntity>( TEntity entity ) where TEntity : class => Set<TEntity>().Add( entity ).Entity;
@@ -55,9 +62,11 @@ namespace Papago.Data.DataAccess
 
 
         public DbSet<Category> Category { get; set; }
+        public DbSet<Client> Client { get; set; }
         public DbSet<Item> Item { get; set; }
         public DbSet<Menu> Menu { get; set; }
         public DbSet<MenuItem> MenuItem { get; set; }
+        public DbSet<Order> Order { get; set; }
         public DbSet<Restaurant> Restaurant { get; set; }
     }
 }

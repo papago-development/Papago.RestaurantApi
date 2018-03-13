@@ -22,5 +22,7 @@ namespace Papago.Model.Entities
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
         [JsonIgnore]
         public virtual ICollection<Menu> Menus { get; set; } = new List<Menu>();
+        [JsonIgnore]
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
